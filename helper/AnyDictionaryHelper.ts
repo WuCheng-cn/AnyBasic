@@ -1,45 +1,46 @@
+import { AnyDictionaryModel } from "../model/AnyDictionaryModel"
+import { IDictionary } from "../interface/IDictionary";
+import { AnyDictionaryArrayModel } from "../model/AnyDictionaryArrayModel";
 /**
- * 字典助手类
+ * # 字典助手类
  */
 export class AnyDictionaryHelper {
   /**
-   * # 获取字典中的所有键
-   * @param dictionary 字典
-   * @returns 键列表
+   * # 根据传入数据创建字典
+   * @param data
+   * @description 该方法会将传入的数据转换为字典对象
    * @example
    * ```ts
-   * const keys = AnyDictionaryHelper.getKeys(dictionary);
+   * const dictionary = AnyDictionaryHelper.createDictionary(data);
    * ```
    */
-  public static getKeys(dictionary: any): string[] {
-    return Object.keys(dictionary);
+  static #createDictionary(data: IDictionary) {
+    let dictionary = new AnyDictionaryModel();
+    dictionary.key = data.key;
+    dictionary.label = data.label;
+    dictionary.description = data.description;
+    dictionary.color = data.color;
+    dictionary.disabled = data.disabled;
+    dictionary.hidden = data.hidden;
+    dictionary.readonly = data.readonly;
+    return dictionary;
   }
 
   /**
-   * # 获取字典中的所有值
-   * @param dictionary 字典
-   * @returns 值列表
+   * # 根据传入数据创建字典数组
+   * @param data
+   * @description 该方法会将传入的数据转换为字典数组
    * @example
    * ```ts
-   * const values = AnyDictionaryHelper.getValues(dictionary);
+   * const dictionaryArray = AnyDictionaryHelper.createDictionaryArray(data);
    * ```
    */
-  public static getValues(dictionary: any): any[] {
-    return Object.values(dictionary);
+  static createDictionaryArray(data: IDictionary[]): AnyDictionaryArrayModel<AnyDictionaryModel> {
+    let dictionaryArray = new AnyDictionaryArrayModel<AnyDictionaryModel>();
+    for (const item of data) {
+      dictionaryArray.push(this.#createDictionary(item));
+    }
+    return dictionaryArray;
   }
 
-  /**
-   * # 获取字典中的所有键值对
-   * @param dictionary 字典
-   * @returns 键值对列表
-   * @example
-   * ```ts
-   * const entries = AnyDictionaryHelper.getEntries(dictionary);
-   * ```
-   * @description 该方法会将字典中的每一项转换为键值对，然后将键值对添加到列表中
-   */
-  public static getEntries(dictionary: any): [string, any][] {
-    return Object.entries(dictionary);
-  }
-  
 }
