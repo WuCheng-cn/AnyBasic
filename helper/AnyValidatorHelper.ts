@@ -17,7 +17,7 @@ export class AnyValidatorHelper {
   public static isEmail(value: string): boolean {
     return /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/.test(value)
   }
-  
+
   /**
    * # 验证是否为合法身份证号
    * @param value 
@@ -73,6 +73,7 @@ export class AnyValidatorHelper {
   public static isNaturalInteger(value: string): boolean {
     return /^[1-9]\d*$/.test(value)
   }
+  
   /**
    * # 验证是否为自然数
    * @param value 
@@ -106,4 +107,4 @@ export class AnyValidatorHelper {
   }
 
 }
-  
+
