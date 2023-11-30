@@ -1,7 +1,7 @@
 import { EStandardStatusColor } from "../enum/EStandardStatusColor";
 
 /**
- * 字典接口
+ * # 字典接口
  */
 export interface IDictionary {
   /**
