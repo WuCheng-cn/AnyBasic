@@ -15,6 +15,26 @@ export class AnyFetchRequest {
   private headers: TBaseType = {};
 
   /**
+   * # 请求控制器
+   * @description 该控制器用于取消请求
+   */
+  private controller: AbortController = new AbortController();
+
+  /**
+   * # 请求超时时间（毫秒）
+   * @default 5 * 1000
+   * @description 该时间为0时，表示不设置超时时间
+   */
+  private timeout: number = 5 * 1000;
+
+  constructor(loading?: boolean) {
+    this.loading = loading || false;
+    this.headers = {
+      'Content-Type': 'application/json'
+    };
+  }
+
+  /**
    * # 发起请求
    * @param url 请求地址
    * @param method 请求方法
@@ -26,13 +46,15 @@ export class AnyFetchRequest {
         reject('请求正在进行中，请稍后再试');
       }
       this.loading = true;
+
+      // 超时处理
+      this.timeoutHandler();
+
       fetch(url, {
         method,
         body: JSON.stringify(params),
-        headers: {
-          'Content-Type': 'application/json',
-          ...this.headers
-        }
+        headers: this.headers,
+        signal: this.controller.signal
       }).then(res => {
         this.loading = false;
         if (res.ok) {
@@ -43,10 +65,31 @@ export class AnyFetchRequest {
       }).then(res => {
         resolve(res);
       }).catch(err => {
-        this.loading = false;
+        this.errorHandler(err);
         reject(err);
       });
     });
+  }
+
+  /**
+   * # 超时处理
+   */
+  private timeoutHandler() {
+    if (this.timeout > 0) {
+      setTimeout(() => {
+        this.loading = false;
+        this.controller.abort();
+      }, this.timeout);
+    }
+  }
+
+  /**
+   * # 请求错误处理
+   * @param err 错误信息
+   */
+  private errorHandler(err: any) {
+    this.loading = false;
+    this.controller.abort();
   }
 
   /**
@@ -107,17 +150,74 @@ export class AnyFetchRequest {
 
   /**
    * # 设置请求头
-   * @param key 请求头key
-   * @param value 请求头value
-   * @description 该方法会设置请求头
+   * @param headers 请求头
+   * @description 该方法会将传入的请求头合并到当前请求头中
    * @example
    * ```ts
-   * new AnyFetchRequest().setHeader(key, value);
+   * new AnyFetchRequest().setHeaders(headers);
    * ```
    */
-  setHeader(key: string, value: string) {
-    this.headers[key] = value;
-    return this;  
+  setHeaders(headers: TBaseType) {
+    this.headers = {
+      ...this.headers,
+      ...headers
+    };
+    return this;
+  }
+
+  /**
+   * # 清空请求头
+   * @description 该方法会清空请求头
+   * @example
+   * ```ts
+   * new AnyFetchRequest().clearHeaders();
+   * ```
+   */
+  clearHeaders() {
+    this.headers = {};
+    return this;
+  }
+
+  /**
+   * # 删除请求头
+   * @param key 请求头key
+   * @description 该方法会删除指定key的请求头
+   * @example
+   * ```ts
+   * new AnyFetchRequest().deleteHeader(key);
+   * ```
+   */
+  deleteHeader(key: string) {
+    delete this.headers[key];
+    return this;
+  }
+
+  /**
+   * # 设置请求超时时间
+   * @param timeout 超时时间（毫秒）
+   * @description 该方法会设置请求超时时间
+   * @example
+   * ```ts
+   * new AnyFetchRequest().setTimeout(timeout);
+   * ```
+   * @description 该时间为0时，表示不设置超时时间
+   */
+  setTimeout(timeout: number) {
+    this.timeout = timeout;
+    return this;
+  }
+
+  /**
+   * # 取消请求
+   * @description 该方法会取消请求
+   * @example
+   * ```ts
+   * new AnyFetchRequest().cancel();
+   * ```
+   */
+  cancel() {
+    this.controller.abort();
+    return this;
   }
 
 }
