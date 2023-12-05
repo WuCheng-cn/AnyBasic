@@ -3,7 +3,7 @@ import { TBaseType } from "type/TBaseType";
 /**
  * # fetch请求类
  */
-export class AnyFetchRequest {
+export class AnyFetchHttp {
   /**
    * # 请求是否正在进行中
    */
