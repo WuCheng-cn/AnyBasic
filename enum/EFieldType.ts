@@ -34,10 +34,4 @@ export enum EFieldType {
    * @description 对应Array类型
    */
   Array = 'Array',
-
-  /**
-   * 枚举
-   * @description 对应Enum类型
-   */
-  Enum = 'Enum',
 }
