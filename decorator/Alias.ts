@@ -1,6 +1,7 @@
+import { AnyDecoratorHelper } from "helper/AnyDecoratorHelper";
 import { IAlias } from "interface/IAlias";
 
-const ALIAS_METADATA_KEY = Symbol('alias');
+export const ALIAS_METADATA_KEY = Symbol('alias');
 
 /**
  * # 别名装饰器
@@ -31,27 +32,6 @@ export function Alias(alias: string|IAlias) {
   return function (target: any, propertyKey: string) {
     let aliasConfig: IAlias
     typeof alias === 'string' ? aliasConfig = { alias } : aliasConfig = alias;
-    Reflect.defineMetadata(ALIAS_METADATA_KEY, aliasConfig, target, propertyKey);
+    AnyDecoratorHelper.defineMetadata(ALIAS_METADATA_KEY, aliasConfig, target, propertyKey);
   };
-}
-
-/**
- * # 获取别名配置
- * @param target 目标对象
- * @param propertyKey 属性名
- * @description 该方法会从元数据中获取别名配置,一直查询到AnyBaseModel
- * @example
- * ```ts
- * const alias = getAlias(target, propertyKey);
- * ```
- */
-export function getAlias(target: any, propertyKey: string): IAlias {
-  let alias: IAlias = Reflect.getMetadata(ALIAS_METADATA_KEY, target, propertyKey);
-  if (!alias) {
-    const parent = Object.getPrototypeOf(target);
-    if (parent&&parent.name!=='AnyBaseModel') {
-      alias = getAlias(parent, propertyKey);
-    }
-  }
-  return alias;
 }
