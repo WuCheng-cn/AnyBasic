@@ -3,33 +3,35 @@ import 'reflect-metadata';
  * 装饰器助手类
  */
 export class AnyDecoratorHelper {
-  
-   /**
-   * # 反射添加元数据
-   * @param target 目标类
-   * @param key 配置key
-   * @param value 配置值
-   * @example
-   * ```ts
-   * AnyDecoratorHelper.defineMetadata(target, key, value);
-   * ```
-   */
-   private static defineMetadata(target: any, key: string, value: any) {
-    Reflect.defineMetadata(key, value, target);
+
+  /**
+  * # 反射添加元数据
+  * @param key 配置key
+  * @param value 配置值
+  * @param target 目标类
+  * @param field 字段名
+  * @example
+  * ```ts
+  * AnyDecoratorHelper.defineMetadata(target, key, value);
+  * ```
+  */
+  static defineMetadata(key: any, value: any, target: any, field: string) {
+    Reflect.defineMetadata(key, value, target, field);
   }
-  
+
   /**
    * # 反射获取元数据
-   * @param target 目标类
    * @param key 配置key
+   * @param target 目标类
+   * @param field 字段名
    * @returns 配置值
    * @example
    * ```ts
    * const value = AnyDecoratorHelper.getMetadata(target, key);
    * ```
    */
-  private static getMetadata(target: any, key: string) {
-    return Reflect.getMetadata(key, target);
+  private static getMetadata(key: string, target: any, field: string) {
+    return Reflect.getMetadata(key, target, field);
   }
 
   /**
@@ -45,24 +47,26 @@ export class AnyDecoratorHelper {
    */
   public static getFieldsByDecorator(target: any, decorator: any): string[] {
     let fields: string[] = [];
-    let prototype = Reflect.getPrototypeOf(target);
-    while (prototype && prototype.constructor.name !== 'AnyBaseModel') {
-      const keys = Object.getOwnPropertyNames(prototype);
-      for (const key of keys) {
-        if (AnyDecoratorHelper.getMetadata(prototype, key) === decorator) {
-          fields.push(key);
-        }
+    for (const field of Object.keys(target)) {
+      const fieldConfig = this.getMetadata(decorator, target, field);
+      if (fieldConfig) {
+        fields.push(field);
       }
-      prototype = Reflect.getPrototypeOf(prototype);
     }
-    return fields;
+    let prototype = Reflect.getPrototypeOf(target);
+    if (prototype && prototype.constructor.name !== 'AnyBaseModel') {
+      return fields.concat(this.getFieldsByDecorator(prototype, decorator));
+    } else {
+      return fields;
+    }
   }
+
 
   /**
    * # 获取目标类指定字段上的指定配置
+   * @param key 配置key
    * @param target 目标类
    * @param field 字段名
-   * @param key 配置key
    * @returns 配置值
    * @example
    * ```ts
@@ -70,24 +74,27 @@ export class AnyDecoratorHelper {
    * ```
    * @description 该方法会递归遍历目标类以及父类的所有字段（持续到AnyBaseModel）
    */
-  public static getMetadataByField(target: any, field: string, key: string): any {
-    const fieldConfig = this.getMetadata(target[field], key);
-    if (fieldConfig) {
-      return fieldConfig;
+  public static getMetadataByField(key: string, target: any, field: string,): any {
+    const value = this.getMetadata(key, target, field);
+    if (value) {
+      return value;
     }
     let prototype = Reflect.getPrototypeOf(target);
     if (prototype && prototype.constructor.name !== 'AnyBaseModel') {
-      return this.getMetadataByField(prototype, field, key);
-    }else{
+      return this.getMetadataByField(key, prototype, field,);
+    } else {
       return null;
     }
   }
 
+
+
+
   /**
    * # 获取目标类指定字段列表上的指定配置列表
+   * @param key 配置key
    * @param target 目标类
    * @param fields 字段列表
-   * @param key 配置key
    * @returns 配置值列表
    * @example
    * ```ts
@@ -95,7 +102,7 @@ export class AnyDecoratorHelper {
    * ```
    * @description 该方法会递归遍历目标类以及父类的所有字段（持续到AnyBaseModel）
    */
-  public static getMetadataByFields(target: any, fields: string[], key: string): any[] {
+  public static getMetadataByFields(key: string, target: any, fields: string[],): any[] {
     let values: any[] = [];
     for (const field of fields) {
       const value = this.getMetadataByField(target, field, key);
@@ -105,5 +112,4 @@ export class AnyDecoratorHelper {
     }
     return values;
   }
-
 }
