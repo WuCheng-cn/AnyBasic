@@ -1,4 +1,3 @@
-import { IPage } from "interface/IPage";
 import { AnyRequestDto } from "./AnyRequestDto";
 import { AnyPageModel } from "model/AnyPageModel";
 
