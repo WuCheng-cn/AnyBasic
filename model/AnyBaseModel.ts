@@ -9,6 +9,7 @@ import { FIELDCONFIG_METADATA_KEY } from "decorator/FieldConfig";
 import { IFieldConfig } from "interface/IFieldConfig";
 import { ENTITYCONFIG_METADATA_KEY } from "decorator/EntityConfig";
 import { IEntityConfig } from "interface/IEntityConfig";
+import { AnyClassTransformHelper } from "helper/AnyClassTransformHelper";
 
 /**
  * # 抽象数据模型基类
@@ -20,30 +21,8 @@ export abstract class AnyBaseModel {
    * @param toAliasType 转换类型
    * @returns 转换后的JSON
    */
-  toAliasJson(toAliasType?:EToAliasType): TBaseType {
-    const keys = Object.keys(this);
-    const result: TBaseType = {};
-    keys.forEach(key => {
-      // 获取别名配置
-      const aliasConfig = AnyDecoratorHelper.getMetadataByField(ALIAS_METADATA_KEY, this, key) as IAlias || null;
-      let alias = key;
-      // 根据别名配置获取别名
-      if (aliasConfig) {
-        switch (toAliasType) {
-          case EToAliasType.Form:
-            alias = aliasConfig.formAlias || aliasConfig.alias;
-            break;
-          case EToAliasType.Search:
-            alias = aliasConfig.searchAlias || aliasConfig.alias;
-            break;
-          default:
-            alias = aliasConfig.alias;
-            break;
-        }
-      }
-      result[alias] = this[key];
-    });
-    return result;
+  toAliasJson(toAliasType?: EToAliasType): TBaseType {
+    return AnyClassTransformHelper.toAliasJson(this, toAliasType);
   }
 
   /**
@@ -82,45 +61,7 @@ export abstract class AnyBaseModel {
    * @description 该方法会将来源数据对象中的所有字段赋值到当前类的实例中
    */
   fromObject(sourceData: TBaseType): this {
-    const keys = Object.keys(this);
-    keys.forEach(key => {
-      if (sourceData[key] !== undefined && sourceData[key] !== null) {
-        // 按别名获取来源数据
-        const aliasConfig = AnyDecoratorHelper.getMetadataByField(ALIAS_METADATA_KEY, this, key) as IAlias || null;
-        let alias = key;
-        if (aliasConfig) {
-          alias = aliasConfig.alias;
-        }
-        // 获取字段类型标记
-        const type = AnyDecoratorHelper.getMetadataByField(TYPE_METADATA_KEY, this, key) as ClassConstructor<any> || null;
-        // 无类型标记，则直接赋值
-        if (!type) {
-          this[key] = sourceData[alias];
-          return;
-        }
-        // 数据是数组，则递归转换
-        if (Array.isArray(sourceData[alias])) {
-          this[key] = this.fromObjectArray(sourceData[alias]);
-          return;
-        }
-        // 如果字段类型标记存在，则将来源数据转换为该类型
-        switch (type.name) {
-          case 'Number':
-            this[key] = Number(sourceData[alias]);
-            break;
-          case 'String':
-            this[key] = String(sourceData[alias]);
-            break;
-          case 'Boolean':
-            this[key] = Boolean(sourceData[alias]);
-            break;
-          default:
-            this[key] = new type().fromObject(sourceData[alias]);
-            break;
-        }
-      }
-    });
-    return this;
+    return AnyClassTransformHelper.toInstance(sourceData, this.constructor as any);
   }
 
   /**
@@ -130,13 +71,7 @@ export abstract class AnyBaseModel {
    * @description 该方法会将来源数据对象数组中的所有对象转换为当前类的实例
    */
   fromObjectArray(sourceDataList: TBaseType[]): this[] {
-    const result: this[] = [];
-    sourceDataList.forEach(sourceData => {
-      const model = new (this.constructor as any)();
-      model.fromObject(sourceData);
-      result.push(model);
-    });
-    return result;
+    return AnyClassTransformHelper.toInstanceArray(sourceDataList, this.constructor as any);
   }
 
   /**
@@ -172,5 +107,5 @@ export abstract class AnyBaseModel {
     }
     return this.name;
   }
-    
+
 }
