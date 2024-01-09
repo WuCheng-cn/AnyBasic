@@ -40,7 +40,7 @@ export class AnyFetchHttp {
    * @param method 请求方法
    * @param params 请求参数
    */
-  private request(url: string, method: string, params?: any) {
+  private request(url: string, method: string, params?: any):Promise<TBaseType> {
     return new Promise((resolve, reject) => {
       if (this.loading) {
         reject('请求正在进行中，请稍后再试');

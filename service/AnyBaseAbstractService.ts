@@ -1,6 +1,9 @@
 import { AnyRequestPageDto } from "dto/AnyRequestPageDto";
 import { AnyBaseEntity } from "entity/AnyBaseEntity";
+import { EToAliasType } from "enum/EToAliasType";
+import { AnyClassTransformHelper } from "helper/AnyClassTransformHelper";
 import { AnyFetchHttp } from "http/AnyFetchHttp";
+import { ClassConstructor } from "type/ClassConstructor";
 
 /**
  * # 与后端约定的获取分页数据的标准url
@@ -44,39 +47,47 @@ export abstract class AnyBaseAbstractService<T extends AnyBaseEntity> extends An
   /**
    * # 获取分页数据
    */
-  getPage(request:AnyRequestPageDto<T>){
-    return this.post(`${this.baseUrl}/${GET_PAGE_DATA_URL}`, request.toAliasJson())
+  async getPage(request: AnyRequestPageDto<T>, classz: ClassConstructor<AnyBaseEntity>) {
+    const res = await this.post(`${this.baseUrl}/${GET_PAGE_DATA_URL}`, request.toAliasJson(EToAliasType.Search))
+    const result = AnyClassTransformHelper.toInstance(res, classz)
+    return result
   }
 
   /**
    * # 获取所有数据
    */
-  getAll(){
-    return this.post(`${this.baseUrl}/${GET_ALL_DATA_URL}`)
+  async getAll(classz: ClassConstructor<AnyBaseEntity>) {
+    const res = await this.post(`${this.baseUrl}/${GET_ALL_DATA_URL}`)
+    const result = AnyClassTransformHelper.toInstance(res, classz)
+    return result
   }
 
   /**
    * # 获取详情
    * @param id
    */
-  getDetail(id: string | number){
-    return this.post(`${this.baseUrl}/${GET_DETAIL_URL}`, { id })
+  async getDetail(id: string | number, classz: ClassConstructor<AnyBaseEntity>) {
+    const res = await this.post(`${this.baseUrl}/${GET_DETAIL_URL}`, { id })
+    const result = AnyClassTransformHelper.toInstance(res, classz)
+    return result
   }
 
   /**
    * # 新增
    * @param data
    */
-  add(data: T){
-    return this.post(`${this.baseUrl}/${ADD_URL}`, data.toAliasJson())
+  async add(data: T) {
+    await this.post(`${this.baseUrl}/${ADD_URL}`, data.toAliasJson(EToAliasType.Form))
+    return
   }
 
   /**
    * # 编辑
    * @param data
    */
-  edit(data: T){
-    return this.post(`${this.baseUrl}/${EDIT_URL}`, data.toAliasJson())
+  async edit(data: T) {
+    await this.post(`${this.baseUrl}/${EDIT_URL}`, data.toAliasJson(EToAliasType.Form))
+    return
   }
 
   /**
@@ -84,10 +95,10 @@ export abstract class AnyBaseAbstractService<T extends AnyBaseEntity> extends An
    * @param data
    * @description 如果传入的数据有id则为编辑，否则为新增
    */
-  save(data: T){
-    if(data.id){
+  save(data: T) {
+    if (data.id) {
       return this.edit(data)
-    }else{
+    } else {
       return this.add(data)
     }
   }
@@ -97,8 +108,9 @@ export abstract class AnyBaseAbstractService<T extends AnyBaseEntity> extends An
    * @param id
    * @private
    */
-  #deleteById(id: string | number){
-    return this.post(`${this.baseUrl}/${DELETE_URL}`, { id:[id] })
+  async #deleteById(id: string | number) {
+    await this.post(`${this.baseUrl}/${DELETE_URL}`, { id: [id] })
+    return
   }
 
   /**
@@ -106,8 +118,9 @@ export abstract class AnyBaseAbstractService<T extends AnyBaseEntity> extends An
    * @param ids
    * @private
    */
-  #deleteByIds(ids: (string | number)[]){
-    return this.post(`${this.baseUrl}/${DELETE_URL}`, { id:ids })
+  async #deleteByIds(ids: (string | number)[]) {
+    await this.post(`${this.baseUrl}/${DELETE_URL}`, { id: ids })
+    return
   }
 
   /**
@@ -115,10 +128,10 @@ export abstract class AnyBaseAbstractService<T extends AnyBaseEntity> extends An
    * @description 接受id或id数组
    * @param id
    */
-  delete(id: string | number | (string | number)[]){
-    if(Array.isArray(id)){
+  async deleteBy(id: string | number | (string | number)[]) {
+    if (Array.isArray(id)) {
       return this.#deleteByIds(id)
-    }else{
+    } else {
       return this.#deleteById(id)
     }
   }
