@@ -15,8 +15,12 @@ export class AnyDecoratorHelper {
   * AnyDecoratorHelper.defineMetadata(target, key, value);
   * ```
   */
-  static defineMetadata(key: any, value: any, target: any, field: string) {
-    Reflect.defineMetadata(key, value, target, field);
+  static defineMetadata(key: any, value: any, target: any, field?: string) {
+    if (field) {
+      Reflect.defineMetadata(key, value, target, field);
+    } else {
+      Reflect.defineMetadata(key, value, target);
+    }
   }
 
   /**
@@ -30,8 +34,12 @@ export class AnyDecoratorHelper {
    * const value = AnyDecoratorHelper.getMetadata(target, key);
    * ```
    */
-  private static getMetadata(key: string, target: any, field: string) {
-    return Reflect.getMetadata(key, target, field);
+  private static getMetadata(key: any, target: any, field?: string) {
+    if (field) {
+      return Reflect.getMetadata(key, target, field);
+    } else {
+      return Reflect.getMetadata(key, target);
+    }
   }
 
   /**
@@ -61,7 +69,6 @@ export class AnyDecoratorHelper {
     }
   }
 
-
   /**
    * # 获取目标类指定字段上的指定配置
    * @param key 配置key
@@ -74,7 +81,7 @@ export class AnyDecoratorHelper {
    * ```
    * @description 该方法会递归遍历目标类以及父类的所有字段（持续到AnyBaseModel）
    */
-  public static getMetadataByField(key: string, target: any, field: string,): any {
+  public static getMetadataByField(key: any, target: any, field?: string,): any {
     const value = this.getMetadata(key, target, field);
     if (value) {
       return value;
@@ -86,9 +93,6 @@ export class AnyDecoratorHelper {
       return null;
     }
   }
-
-
-
 
   /**
    * # 获取目标类指定字段列表上的指定配置列表
@@ -102,7 +106,7 @@ export class AnyDecoratorHelper {
    * ```
    * @description 该方法会递归遍历目标类以及父类的所有字段（持续到AnyBaseModel）
    */
-  public static getMetadataByFields(key: string, target: any, fields: string[],): any[] {
+  public static getMetadataByFields(key: any, target: any, fields: string[],): any[] {
     let values: any[] = [];
     for (const field of fields) {
       const value = this.getMetadataByField(target, field, key);
