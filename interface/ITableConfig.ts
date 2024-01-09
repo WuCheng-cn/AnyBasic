@@ -42,6 +42,7 @@ export interface ITableConfig {
 
   /**
    * # 展示字段（适用于object/object[]数据）
+   * @description 传入string时，直接取对应的字段；传入string[]时，按不同字段多列展示，同字段拼接
    */
-  payloadField?: string;
+  payloadField?: string | string[];
 }
