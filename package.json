@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "commit": "git add . && cz"
   },
   "repository": {
     "type": "git",
@@ -26,10 +27,24 @@
   "author": "WuCheng",
   "license": "ISC",
   "dependencies": {
+    "commitizen": "^4.3.0",
+    "commitlint-config-cz": "^0.13.3",
     "reflect-metadata": "^0.1.13"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "commitlint": "^18.4.4",
+    "commitlint-config-gitmoji": "^2.3.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "cz-customizable": "^7.0.0",
+    "husky": "^8.0.3"
+  },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    }
   }
 }
