@@ -66,7 +66,7 @@ module.exports = {
     customScope: '请输入修改范围(可选):',
     subject: '请简要描述提交(必填):',
     body: '请输入详细描述,使用"|"换行(可选)：',
-    footer: '关联关闭的issue，例如：#1, #2(可选):',
+    footer: '关联关闭的issue，例如：#1, #2(可选);破坏性修改参照 BREAKING CHANGE: 变动的描述/理由/迁移方法:',
     confirmCommit: '确认要使用以上信息提交?'
   },
   allowCustomScopes: true,
