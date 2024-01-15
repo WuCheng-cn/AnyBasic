@@ -13,6 +13,7 @@
     "esModuleInterop": true,
     "types": [
       "reflect-metadata",
+      "node"
     ],
     "lib": [
       "esnext",
