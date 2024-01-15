@@ -1,12 +1,12 @@
 {
   "name": "any-basic",
   "description": "AnyBasic ========= ## 简介 - 元编程实践的核心处理库。采用TS+Reflect对数据进行转换处理、配置标记。快速建立一个标准的工程化数据处理流程。 - 含抽象模型基类、抽象服务基类、http请求类、各类装饰器、助手类。详细请见[参考文档](http://www.baidu.com)<br> ## 扩展说明 - 本库不倾向任何前端框架，仅作数据处理。<br> - 组件库另有[AnyComponentVue](http://ww.baidu.com)和[AnyComponentReact](http://ww.baidu.com)配合Vue/React食用。",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "commit": "git add . && cz",
-    "release": "standard-version"
+    "release": "standard-version --preset gitmoji-config"
   },
   "repository": {
     "type": "git",
@@ -36,6 +36,7 @@
     "@types/node": "^20.11.0",
     "commitlint": "^18.4.4",
     "commitlint-config-gitmoji": "^2.3.1",
+    "conventional-changelog-gitmoji-config": "^1.5.2",
     "cz-conventional-changelog": "^3.3.0",
     "cz-customizable": "^7.0.0",
     "husky": "^8.0.3",
