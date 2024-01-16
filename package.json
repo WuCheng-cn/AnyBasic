@@ -6,7 +6,8 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "commit": "git add . && cz"
+    "commit": "git add . && cz",
+    "release": "standard-version --preset gitmoji-config"
   },
   "repository": {
     "type": "git",
@@ -37,9 +38,11 @@
     "@types/node": "^20.11.0",
     "commitlint": "^18.4.4",
     "commitlint-config-gitmoji": "^2.3.1",
+    "conventional-changelog-gitmoji-config": "^1.5.2",
     "cz-conventional-changelog": "^3.3.0",
     "cz-customizable": "^7.0.0",
-    "husky": "^8.0.3"
+    "husky": "^8.0.3",
+    "standard-version": "^9.5.0"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"

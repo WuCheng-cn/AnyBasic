@@ -15,6 +15,7 @@
     "outDir": "./lib",
     "types": [
       "reflect-metadata",
+      "node"
     ],
     "lib": [
       "esnext",
