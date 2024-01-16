@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# 1.1.0 (2024-01-16)
+
+
+### ✨ Features | 新功能
+
+* **custom**: 新增打包发布脚本 ([d48d6a3](https://gitee.com/aragakki_yui/any-basic/commits/d48d6a3)) - by **吴成**
+
+
+
+
+
 # 1.0.0 (2024-01-15)
 
 
