@@ -23,24 +23,24 @@ export interface IDictionary {
    * # 字典关联颜色
    * @description 该颜色会被用于标识字典的状态，支持标准状态色枚举或者自定义颜色
    */
-  color: EStandardStatusColor | string;
+  color?: EStandardStatusColor | string;
 
   /**
    * # 字典是否禁用
    * @default false
    */
-  disabled: boolean ;
+  disabled?: boolean ;
   
   /**
    * # 字典是否隐藏
    * @default false
    */
-  hidden: boolean;
+  hidden?: boolean;
 
   /**
    * # 字典是否只读
    * @default false
    */
-  readonly: boolean;
+  readonly?: boolean;
   
 }
