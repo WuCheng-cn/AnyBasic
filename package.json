@@ -8,7 +8,8 @@
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "commit": "git add . && cz",
-    "release": "standard-version --preset gitmoji-config"
+    "release": "standard-version --preset gitmoji-config",
+    "publish": "npm publish"
   },
   "repository": {
     "type": "git",
